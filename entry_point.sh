@@ -56,24 +56,27 @@ check_env() {
 # ─────────────────────────────────────────────
 
 start_xvfb() {
-    echo "📦 Starting Xvfb..."
-    Xvfb $DISPLAY -screen 0 $SCREEN_RES &
+    echo "🖥️  Starting Xvfb on $DISPLAY..."
+    Xvfb $DISPLAY -screen 0 $SCREEN_RES 2>&1 &
     export XVFB_PID=$!
-    sleep 1
+    sleep 3
+    echo "Xvfb started with PID $XVFB_PID"
 }
 
 start_vnc() {
-    echo "🖥️  Starting x11vnc..."
-    x11vnc -display $DISPLAY -forever -nopw &
+    echo "🖥️  Starting x11vnc on $DISPLAY..."
+    x11vnc -display $DISPLAY -forever -nopw -create 2>&1 &
     export X11VNC_PID=$!
-    sleep 1
+    sleep 3
+    echo "x11vnc started with PID $X11VNC_PID"
 }
 
 start_fluxbox() {
-    echo "🎛️  Starting Fluxbox..."
-    fluxbox &
+    echo "🎛️  Starting Fluxbox on $DISPLAY..."
+    fluxbox 2>&1 &
     export FLUXBOX_PID=$!
-    sleep 1
+    sleep 3
+    echo "Fluxbox started with PID $FLUXBOX_PID"
 }
 
 start_all() {

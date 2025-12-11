@@ -28,10 +28,11 @@ WORKDIR /app
 
 COPY entry_point.sh .
 
-RUN pip install playwright==1.51.0
+# Install Playwright with --break-system-packages flag to bypass PEP 668 restrictions in Docker container
+RUN pip install --break-system-packages playwright==1.51.0
 
 # Ensure Playwright and its dependencies are installed
-RUN playwright install && playwright install-deps
+RUN playwright install --with-deps
 
 # Set executable permissions
 RUN chmod +x entry_point.sh

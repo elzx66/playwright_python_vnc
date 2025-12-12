@@ -14,16 +14,27 @@ ENV LC_ALL=zh_CN.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install additional system dependencies for Xvfb, VNC, window manager, Chinese language support, terminal emulator, and supervisord
-RUN apt-get update && apt-get install -y \
-    xvfb \
-    x11vnc \
-    fluxbox \
-    vim \
-    xterm \
-    language-pack-zh-hans \
-    language-pack-zh-hans-base \
-    locales \
-    supervisor \
+RUN apt-get update && apt-get install -y \ 
+    xvfb \ 
+    x11vnc \ 
+    fluxbox \ 
+    vim \ 
+    xterm \ 
+    language-pack-zh-hans \ 
+    language-pack-zh-hans-base \ 
+    locales \ 
+    supervisor \ 
+    # Chinese input method support
+    fcitx5 \ 
+    fcitx5-chinese-addons \ 
+    fcitx5-frontend-gtk3 \ 
+    fcitx5-frontend-qt5 \ 
+    fcitx5-module-cloudpinyin \ 
+    fcitx5-pinyin \ 
+    fcitx5-pinyin-zhwiki \ 
+    # Chinese fonts
+    fonts-wqy-zenhei \ 
+    fonts-wqy-microhei \ 
     && rm -rf /var/lib/apt/lists/*
 
 # Configure Chinese locale
@@ -77,6 +88,7 @@ RUN mkdir -p /etc/fonts/conf.d && cat > /etc/fonts/conf.d/99-chinese-font.conf <
     </test>
     <edit name="family" mode="prepend" binding="strong">
       <string>WenQuanYi Zen Hei</string>
+      <string>WenQuanYi Micro Hei</string>
       <string>WenQuanYi Zen Hei Mono</string>
     </edit>
   </match>
@@ -98,6 +110,14 @@ RUN mkdir -p /etc/fonts/conf.d && cat > /etc/fonts/conf.d/99-chinese-font.conf <
   </match>
 </fontconfig>
 EOF
+
+# Configure Chinese input method environment variables
+ENV GTK_IM_MODULE=fcitx5
+ENV QT_IM_MODULE=fcitx5
+ENV XMODIFIERS=@im=fcitx5
+ENV INPUT_METHOD=fcitx5
+ENV XIM=fcitx5
+ENV XIM_PROGRAM=fcitx5
 
 # Update font cache
 RUN fc-cache -fv
@@ -124,6 +144,43 @@ COPY supervisord.conf /etc/supervisor/conf.d/
 RUN mkdir -p /root/.fluxbox
 COPY fluxbox_ownmenu /root/.fluxbox/menu
 RUN chmod +x /root/.fluxbox/menu
+
+# Configure fcitx5 input method
+RUN mkdir -p /root/.config/fcitx5
+RUN cat > /root/.config/fcitx5/profile <<EOF
+[Group/0]
+Name=Default
+DefaultIM=pinyin
+
+[Groups]
+Default=0
+
+[Hotkey]
+TriggerKey=CTRL_SHIFT
+
+[InputMethod/pinyin]
+Enabled=True
+LangCode=zh_CN
+Name=Pinyin
+Parent=fcitx5-pinyin
+EOF
+
+RUN cat > /root/.config/fcitx5/conf/classicui.conf <<EOF
+# 界面语言
+Locale=zh_CN
+
+# 显示输入法名称
+DisplayLanguageName=True
+
+# 主窗口位置
+MainWindowPosition=0
+
+# 候选词数量
+VerticalListCandidateCount=5
+
+# 字体
+Font="WenQuanYi Zen Hei 12"
+EOF
 
 # Default command
 CMD ["/app/entry_point.sh"]

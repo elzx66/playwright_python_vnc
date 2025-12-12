@@ -38,8 +38,11 @@ RUN playwright install --with-deps
 RUN chmod +x entry_point.sh
 
 # Ensure directories are writable
-RUN mkdir -p /app/user_data /shared
-RUN chmod -R 777 /app/user_data /shared
+RUN mkdir -p /app/user_data/
+RUN mkdir -p /app/user_data/
+RUN mkdir -p /shared
+RUN chmod -R 777 /app/user_data
+RUN mkdir -p /shared
 
 # Environment variables
 ENV DISPLAY=:99

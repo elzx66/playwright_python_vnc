@@ -25,6 +25,11 @@ export SCREEN_RES=${SCREEN_RES:-1280x1024x24}
 export USER_DATA_DIR=${USER_DATA_DIR:-/app/user_data}
 export SHARED_DIR=${SHARED_DIR:-/shared}
 
+# ibus environment variables
+export QT_IM_MODULE=ibus
+export GTK_IM_MODULE=ibus
+export XMODIFIERS=@im=ibus
+
 
 
 check_env() {

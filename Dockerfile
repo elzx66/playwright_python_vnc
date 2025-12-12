@@ -25,11 +25,8 @@ RUN apt-get update && apt-get install -y \
     locales \ 
     supervisor \ 
     # Chinese input method support
-    fcitx5 \ 
-    fcitx5-chinese-addons \ 
-    fcitx5-frontend-gtk3 \ 
-    fcitx5-frontend-qt5 \ 
-    fcitx5-pinyin \ 
+    ibus \ 
+    ibus-pinyin \ 
     # Chinese fonts
     fonts-wqy-zenhei \ 
     fonts-wqy-microhei \ 
@@ -110,12 +107,7 @@ RUN mkdir -p /etc/fonts/conf.d && cat > /etc/fonts/conf.d/99-chinese-font.conf <
 EOF
 
 # Configure Chinese input method environment variables
-ENV GTK_IM_MODULE=fcitx5
-ENV QT_IM_MODULE=fcitx5
-ENV XMODIFIERS=@im=fcitx5
-ENV INPUT_METHOD=fcitx5
-ENV XIM=fcitx5
-ENV XIM_PROGRAM=fcitx5
+# Note: ibus environment variables are set in entry_point.sh
 
 # Update font cache
 RUN fc-cache -fv
@@ -143,41 +135,15 @@ RUN mkdir -p /root/.fluxbox
 COPY fluxbox_ownmenu /root/.fluxbox/menu
 RUN chmod +x /root/.fluxbox/menu
 
-# Configure fcitx5 input method
-RUN mkdir -p /root/.config/fcitx5/conf
-RUN cat > /root/.config/fcitx5/profile <<EOF
-[Group/0]
-Name=Default
-DefaultIM=pinyin
+# Configure ibus input method
+RUN mkdir -p /root/.config/ibus
+RUN cat > /root/.config/ibus/setup <<EOF
+[general]
+preload_engine=['pinyin']
+use_system_layout=true
 
-[Groups]
-Default=0
-
-[Hotkey]
-TriggerKey=CTRL_SHIFT
-
-[InputMethod/pinyin]
-Enabled=True
-LangCode=zh_CN
-Name=Pinyin
-Parent=fcitx5-pinyin
-EOF
-
-RUN cat > /root/.config/fcitx5/conf/classicui.conf <<EOF
-# 界面语言
-Locale=zh_CN
-
-# 显示输入法名称
-DisplayLanguageName=True
-
-# 主窗口位置
-MainWindowPosition=0
-
-# 候选词数量
-VerticalListCandidateCount=5
-
-# 字体
-Font="WenQuanYi Zen Hei 12"
+[engine/pinyin]
+enabled=true
 EOF
 
 # Default command

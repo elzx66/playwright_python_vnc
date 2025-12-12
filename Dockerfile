@@ -29,9 +29,7 @@ RUN apt-get update && apt-get install -y \
     fcitx5-chinese-addons \ 
     fcitx5-frontend-gtk3 \ 
     fcitx5-frontend-qt5 \ 
-    fcitx5-module-cloudpinyin \ 
     fcitx5-pinyin \ 
-    fcitx5-pinyin-zhwiki \ 
     # Chinese fonts
     fonts-wqy-zenhei \ 
     fonts-wqy-microhei \ 

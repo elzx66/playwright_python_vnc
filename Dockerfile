@@ -144,7 +144,7 @@ COPY fluxbox_ownmenu /root/.fluxbox/menu
 RUN chmod +x /root/.fluxbox/menu
 
 # Configure fcitx5 input method
-RUN mkdir -p /root/.config/fcitx5
+RUN mkdir -p /root/.config/fcitx5/conf
 RUN cat > /root/.config/fcitx5/profile <<EOF
 [Group/0]
 Name=Default

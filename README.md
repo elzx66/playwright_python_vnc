@@ -37,7 +37,9 @@
 | Variable        | Default          | Description                         |
 | --------------- | ---------------- | ----------------------------------- |
 | `DISPLAY`       | `:99`            | Virtual display ID used by Xvfb     |
+| `SCREEN_RES`    | `1280x1024x24`   | Screen resolution for virtual display |
 | `USER_DATA_DIR` | `/app/user_data` | Stores browser session/profile data |
+| `SHARED_DIR`    | `/shared`        | Shared volume mount point between host and container |
 
 ---
 
@@ -47,9 +49,8 @@ On container startup, the following checks are performed automatically:
 
 - 🐍 **Python** version check
 - 🎭 **Playwright** installation (Python & CLI)
-- 📦 Xvfb virtual display launch
-- 🖥️ x11vnc (VNC server) startup
-- 🎛️ Fluxbox window manager startup
+- 📁 Directory structure setup
+- 🎛️ Supervisor service manager initialization
 
 ---
 
@@ -217,7 +218,7 @@ asyncio.run(main())
 - Includes system dependencies for headless + GUI operation.
 - Always use `launch_persistent_context()` if you want to retain cookies, sessions, logins, etc.
 - Use the `USER_DATA_DIR` environment variable to customize the directory outside your code logic (e.g., via Dockerfile).
-- **Modularized Shell Startup**: You can now run internal tools like `start_xvfb`, `start_vnc`, and `start_fluxbox` directly in the container shell.
+- **Service Management**: All services (Xvfb, x11vnc, Fluxbox) are managed by Supervisor for reliable operation and graceful shutdown.
 - Never use both `launch()` and `launch_persistent_context()` for the same purpose—they behave differently.
 
 ---

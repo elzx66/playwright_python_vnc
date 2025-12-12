@@ -20,27 +20,12 @@ cat <<'EOF'
 Dockerhub - shashankrawlani/playwright_python_vnc
 EOF
 
-# ─────────────────────────────────────────────
-# 💡 ENV & SETUP HELPERS
-# ─────────────────────────────────────────────
-# Load from .env if it exists
-if [ -f "/app/.env" ]; then
-    echo "📥 Loading environment from .env"
-    set -o allexport
-    source /app/.env
-    set +o allexport
-fi
-
-
 export DISPLAY=${DISPLAY:-:99}
-export USER_DATA_DIR=${USER_DATA_DIR:-/app/user_data}
 export SCREEN_RES=${SCREEN_RES:-1280x1024x24}
+export USER_DATA_DIR=${USER_DATA_DIR:-/app/user_data}
+export SHARED_DIR=${SHARED_DIR:-/shared}
 
 
-setup_dirs() {
-    mkdir -p "$USER_DATA_DIR" /shared
-    chmod -R 777 "$USER_DATA_DIR" /shared
-}
 
 check_env() {
     if [ ! -d "/app" ]; then
@@ -49,7 +34,15 @@ check_env() {
     fi
     echo "✅ Working in /app"
     echo "✅ DISPLAY=$DISPLAY"
+    echo "✅ SCREEN_RES=$SCREEN_RES"
     echo "✅ USER_DATA_DIR=$USER_DATA_DIR"
+    echo "✅ SHARED_DIR=$SHARED_DIR"
+}
+
+
+setup_dirs() {
+    mkdir -p "$USER_DATA_DIR" "$SHARED_DIR"
+    chmod -R 777 "$USER_DATA_DIR" "$SHARED_DIR" 
 }
 
 # ─────────────────────────────────────────────
@@ -74,17 +67,6 @@ env_check() {
     echo ""
     echo "✅ Environment check complete!"
 }
-
-# ─────────────────────────────────────────────
-# 🧹 CLEANUP
-# ─────────────────────────────────────────────
-
-cleanup_services() {
-    echo "🧹 Stopping services..."
-    kill $FLUXBOX_PID $X11VNC_PID $XVFB_PID 2>/dev/null
-}
-
-trap cleanup_services INT TERM EXIT
 
 # ─────────────────────────────────────────────
 # 🚀 BOOTSTRAP

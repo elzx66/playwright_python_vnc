@@ -13,15 +13,17 @@ ENV LC_ALL=zh_CN.UTF-8
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install additional system dependencies for Xvfb, VNC, window manager, and Chinese language support
+# Install additional system dependencies for Xvfb, VNC, window manager, Chinese language support, terminal emulator, and supervisord
 RUN apt-get update && apt-get install -y \
     xvfb \
     x11vnc \
     fluxbox \
     vim \
+    xterm \
     language-pack-zh-hans \
     language-pack-zh-hans-base \
     locales \
+    supervisor \
     && rm -rf /var/lib/apt/lists/*
 
 # Configure Chinese locale
@@ -113,6 +115,15 @@ ENV USER_DATA_DIR=/app/user_data
 
 # Expose ports
 EXPOSE 5900
+
+# Create supervisord configuration file
+RUN mkdir -p /etc/supervisor/conf.d
+COPY supervisord.conf /etc/supervisor/conf.d/
+
+# Configure Fluxbox menu
+RUN mkdir -p /root/.fluxbox
+COPY fluxbox_ownmenu /root/.fluxbox/menu
+RUN chmod +x /root/.fluxbox/menu
 
 # Default command
 CMD ["/app/entry_point.sh"]

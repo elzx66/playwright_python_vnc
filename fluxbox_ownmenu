@@ -1,0 +1,12 @@
+[begin] (fluxbox)
+    [submenu] (常用软件) {}
+        [exec] (谷歌浏览器) {/ms-playwright/chromium-1161/chrome-linux/chrome --no-sandbox}
+        [exec] (测试脚本) {python /shared/gen_product_price/app/ms_playwright/record.py}
+        [exec] (终端) {x-terminal-emulator}
+    [end]
+      [submenu] (Shells) {}
+         [exec] (Bash) { x-terminal-emulator -T "Bash" -e /bin/bash --login} <>
+         [exec] (Dash) { x-terminal-emulator -T "Dash" -e /bin/dash -i} <>
+         [exec] (Sh) { x-terminal-emulator -T "Sh" -e /bin/sh --login} <>
+      [end]
+[end]

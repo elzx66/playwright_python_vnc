@@ -1,21 +1,22 @@
 #!/bin/bash
+set -e
 # ┌────────────────────────────────────────────────────────┐
 # │ PyPlayVNC - GhostBrowser for entrypoint.sh 🚀         │
 # └────────────────────────────────────────────────────────┘
 
 cat <<'EOF'
  ____        ____  _           __     ___   _  ____              
-|  _ \ _   _|  _ \| | __ _ _   \ \   / / \ | |/ ___|             
+|  _ \ _   _|  _ \| | __ _ _   \ \   / / \ | |/ ___|              
 | |_) | | | | |_) | |/ _` | | | \ \ / /|  \| | |      _____      
 |  __/| |_| |  __/| | (_| | |_| |\ V / | |\  | |___  |_____|     
-|_|    \__, |_|   |_|\__,_|\__, | \_/  |_| \_|\____|             
+|_|    \__, |_|   |_|\__,_|\__, | \_/  |_| \_|\____|              
   ____ |___/           _   |___/                                 
  / ___| |__   ___  ___| |_| __ ) _ __ _____      _____  ___ _ __ 
 | |  _| '_ \ / _ \/ __| __|  _ \| '__/ _ \ \ /\ / / __|/ _ \ '__|
 | |_| | | | | (_) \__ \ |_| |_) | | | (_) \ V  V /\__ \  __/ |   
  \____|_| |_|\___/|___/\__|____/|_|  \___/ \_/\_/ |___/\___|_|   
 
-🐍 Python + 🎭 Playwright + 🖥️ VNC + 📦 Xvfb + 🎛️ Fluxbox
+🐍 Python + 🎭 Playwright + 🖥️ VNC + 📦 Xvfb + 🎛️ Fluxbox + 🔧 Supervisor
 Dockerhub - shashankrawlani/playwright_python_vnc
 EOF
 
@@ -52,36 +53,10 @@ check_env() {
 }
 
 # ─────────────────────────────────────────────
-# 🎛 STARTERS
+# 🎛 INITIALIZATION (Services managed by Supervisor)
 # ─────────────────────────────────────────────
 
-start_xvfb() {
-    echo "📦 Starting Xvfb..."
-    Xvfb $DISPLAY -screen 0 $SCREEN_RES &
-    export XVFB_PID=$!
-    sleep 1
-}
-
-start_vnc() {
-    echo "🖥️  Starting x11vnc..."
-    x11vnc -display $DISPLAY -forever -nopw &
-    export X11VNC_PID=$!
-    sleep 1
-}
-
-start_fluxbox() {
-    echo "🎛️  Starting Fluxbox..."
-    fluxbox &
-    export FLUXBOX_PID=$!
-    sleep 1
-}
-
-start_all() {
-    setup_dirs
-    start_xvfb
-    start_vnc
-    start_fluxbox
-}
+# No need for start functions as services are managed by Supervisor
 
 # ─────────────────────────────────────────────
 # 🔍 ENVIRONMENT CHECKS
@@ -116,8 +91,14 @@ trap cleanup_services INT TERM EXIT
 # ─────────────────────────────────────────────
 
 check_env
-start_all
+setup_dirs
 env_check
 
-# Stay alive
-wait $XVFB_PID
+# Services are now managed by Supervisor
+# This script just initializes the environment and exits
+# Supervisor will start and manage all services
+
+echo "🚀 Initialization complete! Starting Supervisor to manage all services..."
+
+# Start supervisord to manage services
+exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf

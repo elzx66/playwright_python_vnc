@@ -6,15 +6,26 @@ FROM mcr.microsoft.com/playwright/python:v1.51.0-noble
 # ENV HTTP_PROXY=$HTTPS_PROXY
 # ENV NO_PROXY=localhost,127.0.0.1
 
+# 设置中文语言环境
+ENV LANG=zh_CN.UTF-8
+ENV LANGUAGE=zh_CN:zh
+ENV LC_ALL=zh_CN.UTF-8
+
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install additional system dependencies for Xvfb, VNC, and window manager
+# Install additional system dependencies for Xvfb, VNC, window manager, and Chinese language support
 RUN apt-get update && apt-get install -y \
     xvfb \
     x11vnc \
     fluxbox \
     vim \
+    language-pack-zh-hans \
+    language-pack-zh-hans-base \
+    locales \
     && rm -rf /var/lib/apt/lists/*
+
+# Configure Chinese locale
+RUN locale-gen zh_CN.UTF-8
 
 # Install optional dependencies for Playwright
 RUN apt-get update && apt-get install -y \
@@ -28,6 +39,11 @@ RUN apt-get update && apt-get install -y \
     libgbm1 \
     libpango-1.0-0 \
     libcairo2 \
+    \
+    # Install Chinese language packs for browsers
+    chromium-browser-l10n \
+    firefox-locale-zh-hans \
+    \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -76,8 +92,13 @@ EOF
 # Update font cache
 RUN fc-cache -fv
 
-# Ensure Playwright and its dependencies are installed
-RUN playwright install --with-deps
+# Ensure Playwright and its dependencies are installed with Chinese language support
+RUN playwright install --with-deps chromium
+
+# Configure Chromium to use Chinese language by default
+RUN mkdir -p /app/chromium_config
+RUN echo '{"intl": {"accept_languages": "zh-CN,zh"}}' > /app/chromium_config/locale.json
+ENV CHROMIUM_FLAGS="--lang=zh-CN --user-data-dir=/app/user_data"
 
 # Ensure directories are writable
 RUN mkdir -p /app/user_data/

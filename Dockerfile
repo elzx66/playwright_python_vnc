@@ -137,14 +137,7 @@ RUN chmod +x /root/.fluxbox/menu
 
 # Configure ibus input method
 RUN mkdir -p /root/.config/ibus && \
-    cat > /root/.config/ibus/setup <<EOF
-[general]
-preload_engine=pinyin
-use_system_layout=true
-
-[engine/pinyin]
-enabled=true
-EOF && \
+    echo '[general]\npreload_engine=pinyin\nuse_system_layout=true\n\n[engine/pinyin]\nenabled=true' > /root/.config/ibus/setup && \
     chmod -R 777 /root/.config/ibus
 
 # Default command

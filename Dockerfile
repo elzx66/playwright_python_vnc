@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y \
     fluxbox \ 
     vim \ 
     xterm \ 
+    mousepad \
     language-pack-zh-hans \ 
     language-pack-zh-hans-base \ 
     locales \ 

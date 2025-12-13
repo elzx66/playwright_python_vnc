@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y \
     locales \ 
     supervisor \ 
     # Chinese input method support
+    dbus-x11 \
     ibus \ 
     ibus-pinyin \ 
     # Chinese fonts

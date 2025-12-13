@@ -1,10 +1,7 @@
 services:
   playwright-vnc:
-    build:
-      context: .
-      args:
-        HTTPS_PROXY: http://192.168.10.223:20172
-    container_name: playwright-vnc-test
+    image: ghcr.io/elzx66/playwright_python_vnc:latest
+    container_name: playwright-vnc
     network_mode: bridge
     ports:
       - "5991:5900"

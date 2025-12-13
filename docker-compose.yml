@@ -10,6 +10,7 @@ services:
       - SHARED_DIR=/shared
       - SCREEN_RES=1280x1024x24
       - DISPLAY=:99
+      - SCRIPT_PATH=/shared/main.py
     volumes:
       - ./shared:/shared
       - ./user_data:/app/user_data

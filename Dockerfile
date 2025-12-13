@@ -136,15 +136,16 @@ COPY fluxbox_ownmenu /root/.fluxbox/menu
 RUN chmod +x /root/.fluxbox/menu
 
 # Configure ibus input method
-RUN mkdir -p /root/.config/ibus
-RUN cat > /root/.config/ibus/setup <<EOF
+RUN mkdir -p /root/.config/ibus && \
+    cat > /root/.config/ibus/setup <<EOF
 [general]
-preload_engine=['pinyin']
+preload_engine=pinyin
 use_system_layout=true
 
 [engine/pinyin]
 enabled=true
-EOF
+EOF && \
+    chmod -R 777 /root/.config/ibus
 
 # Default command
 CMD ["/app/entry_point.sh"]

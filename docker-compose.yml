@@ -6,11 +6,12 @@ services:
     ports:
       - "5991:5900"
     environment:
+      - TZ=Asia/Shanghai
       - USER_DATA_DIR=/app/user_data
       - SHARED_DIR=/shared
       - SCREEN_RES=1280x1024x24
       - DISPLAY=:99
-      - SCRIPT_PATH=/shared/main.py
+      - SCRIPT_PATH=/shared/py312v/bin/python /shared/gen_product_price/app/ws_server/server.py
     volumes:
       - ./shared:/shared
       - ./user_data:/app/user_data
